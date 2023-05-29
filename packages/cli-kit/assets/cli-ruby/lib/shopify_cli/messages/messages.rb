@@ -324,21 +324,6 @@ module ShopifyCLI
             no: "No, don't send",
           },
         },
-        analytics: {
-          enable_prompt: {
-            uncaught_error: {
-              question: "Automatically send reports from now on?",
-              yes: "Yes, automatically send anonymized reports to Shopify",
-              no: "No, don't send",
-            },
-            usage: {
-              question: "Automatically send anonymized usage and error reports to Shopify? We use these"\
-                " to make development on Shopify better.",
-              yes: "Yes, automatically send anonymized reports to Shopify",
-              no: "No, don't send",
-            },
-          },
-        },
         connect: {
           already_connected_warning: "{{yellow:! This app appears to be already connected}}",
           project_type_select: "What type of project would you like to connect?",

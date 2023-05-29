@@ -10,7 +10,6 @@ module ShopifyCLI
 
     module StoreKeys
       LAST_MIGRATION_DATE = :last_migration_date
-      ANALYTICS_ENABLED = :analytics_enabled
     end
 
     module Bugsnag

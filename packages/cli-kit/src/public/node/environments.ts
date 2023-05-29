@@ -45,9 +45,5 @@ export async function loadEnvironment(
       body: ['Environment', {command: environmentName}, 'not found.'],
     })
 
-  await metadata.addSensitiveMetadata(() => ({
-    environmentFlags: JSON.stringify(environment),
-  }))
-
   return environment
 }

@@ -4,7 +4,6 @@ import {
   isDevelopment,
   isShopify,
   isUnitTest,
-  analyticsDisabled,
   useDeviceAuth,
   cloudEnvironment,
   macAddress,
@@ -97,41 +96,6 @@ describe('hasGit', () => {
 
     // Then
     expect(got).toBeTruthy()
-  })
-})
-
-describe('analitycsDisabled', () => {
-  test('returns true when SHOPIFY_CLI_NO_ANALYTICS is truthy', () => {
-    // Given
-    const env = {SHOPIFY_CLI_NO_ANALYTICS: '1'}
-
-    // When
-    const got = analyticsDisabled(env)
-
-    // Then
-    expect(got).toBe(true)
-  })
-
-  test('returns true when in development', () => {
-    // Given
-    const env = {SHOPIFY_CLI_ENV: 'development'}
-
-    // When
-    const got = analyticsDisabled(env)
-
-    // Then
-    expect(got).toBe(true)
-  })
-
-  test('returns false without env variables', () => {
-    // Given
-    const env = {}
-
-    // When
-    const got = analyticsDisabled(env)
-
-    // Then
-    expect(got).toBe(false)
   })
 })
 

@@ -49,8 +49,6 @@ async function generate(options: GenerateOptions) {
   const promptOptions = await buildPromptOptions(extensionTemplates, specifications, app, options)
   const promptAnswers = await generateExtensionPrompts(promptOptions)
 
-  await saveAnalyticsMetadata(promptAnswers, options.type)
-
   const generateExtensionOptions = buildGenerateOptions(promptAnswers, app, options)
   const generatedExtensions = await generateExtensionTemplate(generateExtensionOptions)
 
@@ -101,18 +99,6 @@ function limitReached(app: AppInterface, specifications: ExtensionSpecification[
     const existingExtensions = app.extensionsForType({identifier: type, externalIdentifier: type})
     return existingExtensions.length >= (specification?.registrationLimit || 1)
   }
-}
-
-async function saveAnalyticsMetadata(promptAnswers: GenerateExtensionPromptOutput, typeFlag: string | undefined) {
-  await Promise.all(
-    promptAnswers.extensionContent.map((extensionContent) => {
-      return metadata.addPublicMetadata(() => ({
-        cmd_scaffold_template_flavor: extensionContent.flavor,
-        cmd_scaffold_type: promptAnswers.extensionTemplate.identifier,
-        cmd_scaffold_used_prompts_for_type: !typeFlag,
-      }))
-    }),
-  )
 }
 
 function buildGenerateOptions(

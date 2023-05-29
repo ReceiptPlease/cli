@@ -1,5 +1,4 @@
 import {HookReturnPerTunnelPlugin} from './plugins/tunnel.js'
-import {MonorailEventPublic, MonorailEventSensitive} from './monorail.js'
 import {getArrayContainsDuplicates, getArrayRejectingUndefined} from '../common/array.js'
 import {PickByPrefix} from '../common/ts/pick-by-prefix.js'
 import {JsonMap} from '../../private/common/json.js'
@@ -28,27 +27,8 @@ export async function fanoutHooks<TPluginMap extends HookReturnsPerPlugin, TEven
   return Object.fromEntries(res.successes.map(({result, plugin}) => [plugin.name, result])) as any
 }
 
-type AppSpecificMonorailFields = PickByPrefix<MonorailEventPublic, 'app_', 'project_type' | 'api_key' | 'partner_id'> &
-  PickByPrefix<MonorailEventPublic, 'cmd_extensions_'> &
-  PickByPrefix<MonorailEventPublic, 'cmd_scaffold_'>
-
-type AppSpecificSensitiveMonorailFields = PickByPrefix<MonorailEventSensitive, 'app_'>
 
 export interface HookReturnsPerPlugin extends HookReturnPerTunnelPlugin {
-  public_command_metadata: {
-    options: {[key: string]: never}
-    pluginReturns: {
-      '@shopify/app': Partial<AppSpecificMonorailFields>
-      [pluginName: string]: JsonMap
-    }
-  }
-  sensitive_command_metadata: {
-    options: {[key: string]: never}
-    pluginReturns: {
-      '@shopify/app': Partial<AppSpecificSensitiveMonorailFields>
-      [pluginName: string]: JsonMap
-    }
-  }
   [hookName: string]: {
     options: {[key: string]: unknown}
     pluginReturns: {[key: string]: unknown}

@@ -20,23 +20,19 @@ import {
   runConcurrentHTTPProcessesAndPathForwardTraffic,
 } from '../utilities/app/http-reverse-proxy.js'
 import {AppInterface, AppConfiguration, Web, WebType} from '../models/app/app.js'
-import metadata from '../metadata.js'
 import {UIExtension} from '../models/app/extensions.js'
 import {fetchProductVariant} from '../utilities/extensions/fetch-product-variant.js'
 import {load} from '../models/app/loader.js'
 import {getAppIdentifiers} from '../models/app/identifiers.js'
-import {getAnalyticsTunnelType} from '../utilities/analytics.js'
 import {buildAppURLForWeb} from '../utilities/app/app-url.js'
 import {HostThemeManager} from '../utilities/host-theme-manager.js'
 
 import {ExtensionSpecification} from '../models/extensions/specification.js'
 import {Config} from '@oclif/core'
-import {reportAnalyticsEvent} from '@shopify/cli-kit/node/analytics'
 import {execCLI2} from '@shopify/cli-kit/node/ruby'
 import {renderConcurrent} from '@shopify/cli-kit/node/ui'
 import {checkPortAvailability, getAvailableTCPPort} from '@shopify/cli-kit/node/tcp'
 import {AbortSignal} from '@shopify/cli-kit/node/abort'
-import {hashString} from '@shopify/cli-kit/node/crypto'
 import {exec} from '@shopify/cli-kit/node/system'
 import {isSpinEnvironment, spinFqdn} from '@shopify/cli-kit/node/context/spin'
 import {
@@ -274,10 +270,6 @@ async function dev(options: DevOptions) {
     })
   }
 
-  await logMetadataForDev({devOptions: options, tunnelUrl: frontendUrl, shouldUpdateURLs, storeFqdn})
-
-  await reportAnalyticsEvent({config: options.commandConfig})
-
   if (proxyTargets.length === 0) {
     await renderConcurrent({processes: additionalProcesses})
   } else {
@@ -506,28 +498,6 @@ async function buildCartURLIfNeeded(extensions: UIExtension[], store: string, ch
   if (checkoutCartUrl) return checkoutCartUrl
   const variantId = await fetchProductVariant(store)
   return `/cart/${variantId}:1`
-}
-
-async function logMetadataForDev(options: {
-  devOptions: DevOptions
-  tunnelUrl: string
-  shouldUpdateURLs: boolean
-  storeFqdn: string
-}) {
-  const tunnelType = await getAnalyticsTunnelType(options.devOptions.commandConfig, options.tunnelUrl)
-  await metadata.addPublicMetadata(() => ({
-    cmd_dev_tunnel_type: tunnelType,
-    cmd_dev_tunnel_custom_hash: tunnelType === 'custom' ? hashString(options.tunnelUrl) : undefined,
-    cmd_dev_urls_updated: options.shouldUpdateURLs,
-    store_fqdn_hash: hashString(options.storeFqdn),
-    cmd_app_dependency_installation_skipped: options.devOptions.skipDependenciesInstallation,
-    cmd_app_reset_used: options.devOptions.reset,
-  }))
-
-  await metadata.addSensitiveMetadata(() => ({
-    store_fqdn: options.storeFqdn,
-    cmd_dev_tunnel_custom: tunnelType === 'custom' ? options.tunnelUrl : undefined,
-  }))
 }
 
 async function validateCustomPorts(backendConfig?: Web, frontendConfig?: Web) {

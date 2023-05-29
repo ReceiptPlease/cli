@@ -1,7 +1,4 @@
-import {MonorailEventPublic} from './monorail.js'
-import {sendErrorToBugsnag} from './error-handler.js'
 import {isUnitTest} from './context/local.js'
-import {PickByPrefix} from '../common/ts/pick-by-prefix.js'
 import {AnyJson} from '../../private/common/json.js'
 
 type ProvideMetadata<T> = () => Partial<T> | Promise<Partial<T>>
@@ -82,7 +79,6 @@ export function createRuntimeMetadataContainer<
         await getAndSet()
         // eslint-disable-next-line no-catch-all/no-catch-all, @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        await sendErrorToBugsnag(error)
       }
     }
   }
@@ -103,25 +99,7 @@ export function createRuntimeMetadataContainer<
   }
 }
 
-// We want to track anything that ends up getting sent to monorail as `cmd_all_*` and
-// `cmd_app_*`
-type CmdFieldsFromMonorail = PickByPrefix<MonorailEventPublic, 'cmd_all_'> &
-  PickByPrefix<MonorailEventPublic, 'cmd_app_'> &
-  PickByPrefix<MonorailEventPublic, 'cmd_create_app_'>
 
-const coreData = createRuntimeMetadataContainer<
-  CmdFieldsFromMonorail,
-  {
-    commandStartOptions: {
-      startTime: number
-      startCommand: string
-      startTopic?: string
-      startArgs: string[]
-    }
-  } & {environmentFlags: string}
->()
 
-export const {getAllPublicMetadata, getAllSensitiveMetadata, addPublicMetadata, addSensitiveMetadata} = coreData
 
-export type Public = PublicSchema<typeof coreData>
-export type Sensitive = SensitiveSchema<typeof coreData>
+

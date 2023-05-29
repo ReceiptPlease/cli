@@ -4,7 +4,6 @@ import Command from '../../utilities/app-command.js'
 import {Flags} from '@oclif/core'
 import {normalizeStoreFqdn} from '@shopify/cli-kit/node/context/fqdn'
 import {globalFlags} from '@shopify/cli-kit/node/cli'
-import {addPublicMetadata} from '@shopify/cli-kit/node/metadata'
 
 export default class Dev extends Command {
   static description = 'Run the app.'
@@ -94,12 +93,6 @@ export default class Dev extends Command {
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Dev)
-
-    await addPublicMetadata(() => ({
-      cmd_app_dependency_installation_skipped: flags['skip-dependencies-installation'],
-      cmd_app_reset_used: flags.reset,
-      cmd_dev_tunnel_type: flags['tunnel-url'] ? 'custom' : flags.tunnel,
-    }))
 
     const commandConfig = this.config
 

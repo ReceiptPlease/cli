@@ -1,7 +1,6 @@
-import {errorHandler, registerCleanBugsnagErrorsFromWithinPlugins} from './error-handler.js'
+import {errorHandler} from './error-handler.js'
 import {loadEnvironment} from './environments.js'
 import {isDevelopment} from './context/local.js'
-import {addPublicMetadata} from './metadata.js'
 import {AbortError} from './error.js'
 import {renderInfo} from './ui.js'
 import {JsonMap} from '../../private/common/json.js'
@@ -28,10 +27,6 @@ abstract class BaseCommand extends Command {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected async init(): Promise<any> {
     this.exitWithTimestampWhenEnvVariablePresent()
-    if (!isDevelopment()) {
-      // This function runs just prior to `run`
-      await registerCleanBugsnagErrorsFromWithinPlugins(this.config)
-    }
     return super.init()
   }
 
@@ -110,11 +105,6 @@ abstract class BaseCommand extends Command {
 }
 
 export async function addFromParsedFlags(flags: {path?: string; verbose?: boolean}): Promise<void> {
-  await addPublicMetadata(() => ({
-    cmd_all_verbose: flags.verbose,
-    cmd_all_path_override: flags.path !== undefined,
-    cmd_all_path_override_hash: flags.path === undefined ? undefined : hashString(flags.path),
-  }))
 }
 
 /**

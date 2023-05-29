@@ -9,12 +9,10 @@ const cacheFolder = () => {
 }
 
 export const environmentVariables = {
-  alwaysLogAnalytics: 'SHOPIFY_CLI_ALWAYS_LOG_ANALYTICS',
   deviceAuth: 'SHOPIFY_CLI_DEVICE_AUTH',
   enableCliRedirect: 'SHOPIFY_CLI_ENABLE_CLI_REDIRECT',
   env: 'SHOPIFY_CLI_ENV',
   firstPartyDev: 'SHOPIFY_CLI_1P_DEV',
-  noAnalytics: 'SHOPIFY_CLI_NO_ANALYTICS',
   partnersToken: 'SHOPIFY_CLI_PARTNERS_TOKEN',
   runAsUser: 'SHOPIFY_RUN_AS_USER',
   serviceEnv: 'SHOPIFY_SERVICE_ENV',
